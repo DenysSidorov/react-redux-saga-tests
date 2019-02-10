@@ -168,3 +168,9 @@ export const getNewData = () => async (dispatch, getState) => {
     }
   }
 };
+
+// SAGAS API:
+// https://github.com/redux-saga/redux-saga/tree/master/docs/api#saga-helpers
+
+// it describes: call, put, take, takeLatest, select state, fire parallel fetching,
+// https://medium.freecodecamp.org/async-operations-using-redux-saga-2ba02ae077b3
