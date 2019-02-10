@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   CHANGE_FETCHING_STATE,
   CHANGE_SEARCH_VALUE,
@@ -11,8 +10,6 @@ import {
 } from '../../action-variables/index';
 
 import cities from '../../../api/mocks/cities';
-
-import {generateUniqueId} from '../../../helpers/index';
 
 const initState = {
   currentItem: {},
@@ -102,75 +99,53 @@ export const itemsFetchedError = (isFetching, searchError) => ({
   },
 });
 
-// we can have dispatch and getState with using redux-thunk
-// export const fetchSearchResult = (objParams) => async (dispatch, getState) => {
-
-export const getNewData = () => async (dispatch, getState) => {
-  const {isFetching, zipCodeItems, searchValue, currentItem} = getState().itemReducer;
-  // prevent fetching new data if user are fetching data now
-  if (!isFetching) {
-    // this.setState({isFetching: true});
-    dispatch(changeFetchingState(true));
-    try {
-      const result = await axios({
-        method: 'get',
-        url: `https://api.zippopotam.us/us/${searchValue}`,
-      });
-
-      // if application has correct response
-      if (result.status === 200) {
-        const isPostCodeExists = zipCodeItems.some(
-          el => el['post code'] === result.data['post code'],
-        );
-
-        let newData = [].concat([], zipCodeItems);
-        // create or change exists item
-        if (!isPostCodeExists) {
-          if (!currentItem._id) {
-            // create new item
-            newData = [].concat(zipCodeItems, {...result.data, _id: generateUniqueId()});
-          } else {
-            // update exists item
-            newData = zipCodeItems.map(el =>
-              el._id === currentItem._id ? {...result.data, _id: currentItem._id} : el,
-            );
-          }
-        }
-
-        // generate error text for user
-        let searchError = '';
-        if (isPostCodeExists) {
-          searchError = 'Post code already exists';
-        }
-        dispatch(itemsFetchedSuccess(false, searchError, newData));
-        // this.setState({
-        //   isFetching: false,
-        // searchValue: '',
-        // searchError: searchError,
-        // zipCodeItems: newData,
-        // });
-      } else {
-        // this.setState({isFetching: false, searchError: 'Something wrong with connection!'});
-        dispatch(itemsFetchedError(false, 'Something wrong with connection!'));
-        // dispatch(changeFetchingState(false));
-        // dispatch(changeErrorValue('Something wrong with connection!'));
-      }
-    } catch (er) {
-      console.log(er.response || er);
-      let searchError = '';
-      if (er.response && er.response.data && er.response.data['post code'] === undefined) {
-        searchError = "Post code wasn't found";
-      }
-      dispatch(itemsFetchedError(false, searchError));
-      // dispatch(changeFetchingState(false));
-      // dispatch(changeErrorValue(searchError));
-      // this.setState({isFetching: false, searchError});
-    }
-  }
-};
-
-// SAGAS API:
-// https://github.com/redux-saga/redux-saga/tree/master/docs/api#saga-helpers
-
-// it describes: call, put, take, takeLatest, select state, fire parallel fetching,
-// https://medium.freecodecamp.org/async-operations-using-redux-saga-2ba02ae077b3
+// export const getNewData = () => async (dispatch, getState) => {
+//   const {isFetching, zipCodeItems, searchValue, currentItem} = getState().itemReducer;
+//   // prevent fetching new data if user are fetching data now
+//   if (!isFetching) {
+//     dispatch(changeFetchingState(true));
+//     try {
+//       const result = await axios({
+//         method: 'get',
+//         url: `https://api.zippopotam.us/us/${searchValue}`,
+//       });
+//
+//       // if application has correct response
+//       if (result.status === 200) {
+//         const isPostCodeExists = zipCodeItems.some(
+//           el => el['post code'] === result.data['post code'],
+//         );
+//
+//         let newData = [].concat([], zipCodeItems);
+//         // create or change exists item
+//         if (!isPostCodeExists) {
+//           if (!currentItem._id) {
+//             // create new item
+//             newData = [].concat(zipCodeItems, {...result.data, _id: generateUniqueId()});
+//           } else {
+//             // update exists item
+//             newData = zipCodeItems.map(el =>
+//               el._id === currentItem._id ? {...result.data, _id: currentItem._id} : el,
+//             );
+//           }
+//         }
+//
+//         // generate error text for user
+//         let searchError = '';
+//         if (isPostCodeExists) {
+//           searchError = 'Post code already exists';
+//         }
+//         dispatch(itemsFetchedSuccess(false, searchError, newData));
+//       } else {
+//         dispatch(itemsFetchedError(false, 'Something wrong with connection!'));
+//       }
+//     } catch (er) {
+//       console.log(er.response || er);
+//       let searchError = '';
+//       if (er.response && er.response.data && er.response.data['post code'] === undefined) {
+//         searchError = "Post code wasn't found";
+//       }
+//       dispatch(itemsFetchedError(false, searchError));
+//     }
+//   }
+// };

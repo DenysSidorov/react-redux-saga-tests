@@ -9,6 +9,7 @@ import LangFlags from './LangFlags';
 // import cities from '../api/mocks/cities';
 import '../styles/index.scss';
 import ErrorBoundary from '../HOCs/ErrorBoundary';
+import {START_SAGA_ZIPCODES} from '../state/action-variables/index';
 import {
   changeFetchingState,
   changeCurrentItem,
@@ -16,7 +17,7 @@ import {
   changeSearchValue,
   changeZIPCodes,
   setInitialState,
-  getNewData,
+  // getNewData,
 } from '../state/reducers/items/index';
 
 class ZiPCodeComponent extends React.Component {
@@ -242,7 +243,7 @@ const mapDispatchToProps = dispatch =>
       changeZIPCodes: codesArray => changeZIPCodes(codesArray),
       changeCurrentItem: currentItemObject => changeCurrentItem(currentItemObject),
       setInitialState: () => setInitialState(),
-      getNewData: () => getNewData(dispatch),
+      getNewData: () => dispatch({type: START_SAGA_ZIPCODES}), // getNewData(dispatch),
     },
     dispatch,
   );

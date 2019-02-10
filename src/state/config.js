@@ -1,14 +1,17 @@
 import {createStore, applyMiddleware, compose} from 'redux';
-
-import thunk from 'redux-thunk';
-
+// import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
+import {watcherSaga} from './sagas';
 import rootReducer from './reducers/index';
+
+// create the saga middleware
+const sagaMiddleware = createSagaMiddleware();
 
 //  init state of all application
 const initialState = {};
 const enhancers = [];
 
-const middleware = [thunk];
+const middleware = [/* thunk */ sagaMiddleware];
 
 // setup in webpack or launch-server
 // if (process.env.NODE_ENV === 'development') {
@@ -23,6 +26,9 @@ const composedEnhancers = compose(
 
 // main store of pur app
 export const store = createStore(rootReducer, initialState, composedEnhancers);
+
+// run the saga
+sagaMiddleware.run(watcherSaga);
 
 // setInterval(()=>{
 //   Log.info(store.getState());
